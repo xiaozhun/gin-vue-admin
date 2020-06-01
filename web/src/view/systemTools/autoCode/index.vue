@@ -11,7 +11,7 @@
             <el-form-item label="文件名称" prop="packageName">
                 <el-input v-model="form.packageName"></el-input>
             </el-form-item>
-            <el-form-item label="自行创建api入库">
+            <el-form-item>
                 <el-checkbox v-model="form.autoCreateApiToSql">自动创建api</el-checkbox>
             </el-form-item>
         </el-form>
@@ -116,7 +116,7 @@ export default {
     components:{
         FieldDialog
     },
-    methods:{
+        methods:{
         editAndAddField(item){
             this.dialogFlag = true
             if(item){
@@ -128,7 +128,14 @@ export default {
                 this.dialogMiddle = JSON.parse(JSON.stringify(fieldTemplate))
             }
         },
+        regExp(ele){
+            return ele.replace(/\s*/g,"")
+        },
         enterDialog(){
+            this.dialogMiddle.fieldName = this.regExp(this.dialogMiddle.fieldName)
+            this.dialogMiddle.fieldDesc = this.regExp(this.dialogMiddle.fieldDesc)
+            this.dialogMiddle.fieldJson = this.regExp(this.dialogMiddle.fieldJson)
+            this.dialogMiddle.columnName = this.regExp(this.dialogMiddle.columnName)
             this.$refs.fieldDialog.$refs.fieldDialogFrom.validate((valid) => {
           if (valid) {
             this.dialogMiddle.fieldName = toUpperCase(this.dialogMiddle.fieldName)
@@ -140,7 +147,7 @@ export default {
             return false;
           }
         });
-            
+
         },
         closeDialog(){
             if(this.addFlag=="edit"){
@@ -161,7 +168,11 @@ export default {
             }
             this.$refs.autoCodeForm.validate(async (valid) => {
           if (valid) {
-            this.form.structName = toUpperCase(this.form.structName)
+              this.form.structName = this.regExp(this.form.structName)
+              this.form.structName = toUpperCase(this.form.structName)
+              this.form.abbreviation = this.regExp(this.form.abbreviation)
+              this.form.packageName = this.regExp(this.form.packageName)
+
             if(this.form.structName == this.form.abbreviation){
                 this.$message({
                     type:"error",
